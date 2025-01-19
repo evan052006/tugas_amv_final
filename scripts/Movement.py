@@ -13,13 +13,13 @@ class Movement(object):
 		if data.green - self.previous_green >= 3:
 			rospy.loginfo("Turning left for 1.5 seconds")
 			rospy.sleep(1.5)
+			self.previous_green = data.green
 		elif data.red - self.previous_red >= 4:
 			rospy.loginfo("Turning right for 1.5 seconds")
 			rospy.sleep(1.5)
+			self.previous_red = data.red
 		else:
 			rospy.loginfo("Currently moving forward")
-		self.previous_green = data.green
-		self.previous_red = data.red
 
 if __name__ == '__main__':
 	try:
