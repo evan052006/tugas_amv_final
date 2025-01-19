@@ -8,11 +8,10 @@ project(tugas_amv_final)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  actionlib
-  actionlib_msgs
+  rospy
+  roscpp
   cv_bridge
   image_transport
-  rospy
   sensor_msgs
   std_msgs
 )

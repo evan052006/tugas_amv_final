@@ -10,13 +10,19 @@ class Movement(object):
 		self.previous_red = 0
 
 	def callback(self, data):
-		if data.green - self.previous_green >= 3:
-			rospy.loginfo("Turning left for 1.5 seconds")
-			rospy.sleep(1.5)
+		times_to_turn_left = (data.green - self.previous_green) // 3
+		times_to_turn_right = (data.red - self.previous_red) // 4
+		if times_to_turn_left:
+			for _ in range(times_to_turn_left):
+				rospy.loginfo("Turning left for 1.5 seconds")
+				rospy.sleep(1.5)
+				rospy.loginfo("Finished turning left\nMoving forward again")
 			self.previous_green = data.green
-		elif data.red - self.previous_red >= 4:
-			rospy.loginfo("Turning right for 1.5 seconds")
-			rospy.sleep(1.5)
+		elif times_to_turn_right:
+			for _ in range(times_to_turn_right):
+				rospy.loginfo("Turning right for 1.5 seconds")
+				rospy.sleep(1.5)
+				rospy.loginfo("Finished turning right\nMoving forward again")
 			self.previous_red = data.red
 		else:
 			rospy.loginfo("Currently moving forward")

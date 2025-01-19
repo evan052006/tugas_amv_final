@@ -1,3 +1,5 @@
 <launch>
-
+    <node pkg="tugas_amv_final" name="Utama" type="Utama.py" output="screen">
+    <node pkg="tugas_amv_final" name="Movement" type="Movement.py" output="screen">
+    <node pkg="tugas_amv_final" name="Cam" type="Cam.py" output="screen"> 
 </launch>

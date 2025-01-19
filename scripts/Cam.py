@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import rospy # Python library for ROS
-from sensor_msgs.msg import Image # Image is the message type
-from cv_bridge import CvBridge # Package to convert between ROS and OpenCV Images
-import cv2 # OpenCV library
+import rospy
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+import cv2
 
 class Cam(object):
 	def __init__(self):
@@ -15,7 +15,6 @@ class Cam(object):
 		while not rospy.is_shutdown():
 				ret, frame = self.video_capture.read()
 				if ret == True:
-					rospy.loginfo('publishing video frame')
 					self.publisher.publish(self.bridge.cv2_to_imgmsg(frame))
 				self.rate.sleep()
 
