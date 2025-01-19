@@ -23,29 +23,30 @@ class Utama(object):
         self.green_lower_limit = np.array([40,50,50])
         self.green_upper_limit = np.array([80,255,255])
 
-        cv2.createTrackbar("red_trackbar", "red", 0, 179, self.red_trackbar_oncall)
-        cv2.createTrackbar("green_lower_trackbar", "red", 0, 179, self.green_lower_trackbar_oncall)
-        cv2.createTrackbar("green_upper_trackbar", "green", 0, 179, self.green_upper_trackbar_oncall)
+        cv2.namedWindow("tweakers", cv2.WINDOW_AUTOSIZE)
 
-        #red_lower_left_limit = np.array([10,50,50])
-        #red_upper_left_limit = np.array([10,255,255])
-        #red_lower_right_limit = np.array([170,50,50])
-        #red_upper_right_limit = np.array([180,255,255])
+        cv2.createTrackbar("red_trackbar", "tweakers", 0, 179, self.red_trackbar_oncall)
+        cv2.createTrackbar("green_lower_trackbar", "tweakers", 0, 179, self.green_lower_trackbar_oncall)
+        cv2.createTrackbar("green_upper_trackbar", "tweakers", 0, 179, self.green_upper_trackbar_oncall)
 
-        #green_lower_limit = np.array([40,50,50])
-        #green_upper_limit = np.array([80,255,255])
+        red_lower_left_limit = np.array([0,50,50])
+        red_upper_left_limit = np.array([5,255,255])
+        red_lower_right_limit = np.array([174,50,50])
+        red_upper_right_limit = np.array([179,255,255])
+        green_lower_limit = np.array([40,50,50])
+        green_upper_limit = np.array([80,255,255])
 
     def red_trackbar_oncall(self, val):
-        self.red_lower_left_limit = np.array([val,50,50])
+        self.red_lower_left_limit = np.array([0,50,50])
         self.red_upper_left_limit = np.array([val,255,255])
         self.red_lower_right_limit = np.array([179-val,50,50])
-        self.red_upper_right_limit = np.array([179-val,255,255])
+        self.red_upper_right_limit = np.array([179,255,255])
     
     def green_lower_trackbar_oncall(self, val):
-        self.green_lower_limit = val
+        self.green_lower_limit = np.array([val,50,50])
     
     def green_upper_trackbar_oncall(self, val):
-        self.green_upper_limit = val
+        self.green_upper_limit = np.array([val,255,255])
 
     def callback(self, data):
         current_frame = self.bridge.imgmsg_to_cv2(data)
@@ -55,14 +56,16 @@ class Utama(object):
             cv2.inRange(hsv_frame, self.red_lower_left_limit, self.red_upper_left_limit) \
             | cv2.inRange(hsv_frame, self.red_lower_right_limit, self.red_upper_right_limit)
         red = cv2.bitwise_and(hsv_frame, hsv_frame, mask=red_mask)
-        red_grayscale = cv2.COLOR_BGR2GRAY(red)
+        red_grayscale = cv2.cvtColor(red, cv2.COLOR_BGR2GRAY)
         
         green_mask = cv2.inRange(hsv_frame, self.green_lower_limit, self.green_upper_limit)
         green = cv2.bitwise_and(hsv_frame, hsv_frame, mask=green_mask)
-        green_grayscale = cv2.COLOR_BGR2GRAY(green)
+        green_grayscale = cv2.cvtColor(green, cv2.COLOR_BGR2GRAY) 
 
         cv2.imshow("red", red_grayscale)
         cv2.imshow("green", green_grayscale)
+
+        cv2.waitKey(1)
 
         red_count = self.detect_count_from_grayscale(current_frame, red_grayscale)
         green_count = self.detect_count_from_grayscale(current_frame, green_grayscale)
