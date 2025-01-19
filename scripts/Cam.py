@@ -15,6 +15,8 @@ class Cam(object):
 		while not rospy.is_shutdown():
 				ret, frame = self.video_capture.read()
 				if ret == True:
+					#cv2.imshow("Camera", frame)
+					cv2.waitKey(1)
 					self.publisher.publish(self.bridge.cv2_to_imgmsg(frame))
 				self.rate.sleep()
 
@@ -22,5 +24,6 @@ if __name__ == '__main__':
 	try:
 		cam = Cam()
 		cam.publish_message()
+		cv2.destroyAllWindows()
 	except rospy.ROSInterruptException:
 		pass
