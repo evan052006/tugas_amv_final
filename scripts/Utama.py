@@ -109,17 +109,14 @@ class Utama(object):
         self.prev_red_count = red_count
         self.prev_green_count = green_count
 
-        rospy.loginfo(f"red: {self.current_red_count} green: {self.current_green_count}")
-        rospy.loginfo(f"red: {self.red_debouncer.current_count} green: {self.green_debouncer.current_count}")
+        rospy.loginfo(f"total_red: {self.current_red_count} total_green: {self.current_green_count}")
+        rospy.loginfo(f"current_red: {self.red_debouncer.current_count} current_green: {self.green_debouncer.current_count}")
 
         self.publisher.publish(BuoyCount(self.current_red_count, self.current_green_count))
 
     def detect_count_from_grayscale(self, original, mask, t, ct1, ct2):
         blur = cv2.GaussianBlur(mask, (25, 25), 0)
         canny = cv2.Canny(blur, ct1, ct2, 3)
-        if t:
-            cv2.imshow("contour",canny)
-            cv2.waitKey(1)
         dilated = cv2.dilate(canny, (1, 1), iterations=1)
         (contours, _) = cv2.findContours(
             dilated.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -130,9 +127,8 @@ class Utama(object):
                 count += 1
         rospy.loginfo(f"contcount: {count}, totalcont: {len(contours)}")
         rgb = cv2.cvtColor(original, cv2.COLOR_BGR2RGB)
-        if t:
-            #cv2.imshow("contour", cv2.drawContours(rgb, contours, -1, (0, 255, 0), 2))
-            cv2.waitKey(1)
+        cv2.imshow("green" if t else "red", cv2.drawContours(rgb, contours, -1, (0, 255, 0), 2))
+        cv2.waitKey(1)
         return count
 
 if __name__ == '__main__':
